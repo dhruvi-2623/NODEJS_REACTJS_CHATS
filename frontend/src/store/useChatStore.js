@@ -26,7 +26,7 @@ getMessages: async (userId) => {
         set({isMessagesLoading: true});
         try {
             const res = await axiosInstance.get(`/messages/${userId}`);
-            set({message: res.data});
+            set({messages: res.data});
         } catch (error) {
             toast.error(error.response.data.message)
         }finally{
@@ -35,10 +35,10 @@ getMessages: async (userId) => {
 },
 
 sendMessage: async (messageData) => {
-    const {selectedUser, messages} = get()
+    const {selectedUser, messages} = get();
      try {
         const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
-        set({messages:[...messages,res.data]})
+        set({messages: [...messages,res.data]});
      } catch (error) {
         toast.error(error.response.data.message);
      }
