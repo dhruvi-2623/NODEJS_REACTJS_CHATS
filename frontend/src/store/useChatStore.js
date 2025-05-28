@@ -47,12 +47,17 @@ sendMessage: async (messageData) => {
 
 subscribeToMessage: () => {
   const socket = useAuthStore.getState().socket;
-  const me = useAuthStore.getState().authUser._id;
+  const me     = useAuthStore.getState().authUser._id;
+  const to     = get().selectedUser?._id;
 
-  socket.emit("joinChat", { from: me, to: get().selectedUser._id });
+  socket.emit("joinChat", { from: me, to });
+
+  socket.off("newMessage");
 
   socket.on("newMessage", (newMessage) => {
     if (newMessage.senderId === me) return;
+
+    if (newMessage.senderId !== to) return;
 
     set(state => ({
       messages: [...state.messages, newMessage]

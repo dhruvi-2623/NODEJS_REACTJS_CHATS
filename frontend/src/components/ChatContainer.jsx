@@ -15,13 +15,26 @@ const {authUser} = useAuthStore();
 const messageEndRef = useRef(null);
 
 
-   useEffect(() => {
-    getMessages(selectedUser._id);
+  //  useEffect(() => {
+  //   getMessages(selectedUser._id);
 
-    subscribeToMessage();
+  //   subscribeToMessage();
 
-    return() => unsubscribeFromMessage();
-  }, [selectedUser._id, getMessages, subscribeToMessage, unsubscribeFromMessage]);
+  //   return() => unsubscribeFromMessage();
+  // }, [selectedUser._id, getMessages, subscribeToMessage, unsubscribeFromMessage]);
+
+  useEffect(() => {
+    if (!selectedUser) return;
+
+   getMessages(selectedUser._id);
+
+   subscribeToMessage();
+
+   return () => {
+     unsubscribeFromMessage();
+   };
+ }, [selectedUser]);
+
 
   useEffect(() => {
     if (messageEndRef.current && messages) {
@@ -45,7 +58,7 @@ const messageEndRef = useRef(null);
 <div className="flex-1 overflow-y-auto p-4 space-y-4">
     {messages.map((message)=>(
       <div key={message._id} 
-      className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`} ref={messageEndRef}>
+      className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}>
         <div className="chat-image avatar">
           <div className="size-10 rounded-full border">
             <img 
@@ -75,6 +88,8 @@ const messageEndRef = useRef(null);
             </div>
       </div>
     ))}
+  <div ref={messageEndRef} />
+
 </div>
       <MessageInput/>
     </div>
